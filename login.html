@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Apna Meme Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="login-page">
+
+    <header>
+        <a href="index.html" class="logo">Apna Meme Store</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html" class="cart-icon">
+                Cart
+                <span id="cart-count" class="cart-count">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="container" style="max-width: 500px;">
+        <h1>Admin Login</h1>
+        <div id="feedback-message" class="message hidden"></div>
+        <form id="login-form" class="checkout-form">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </main>
+    
+    <script type="module" src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Apna Meme Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="checkout-page">
+
+    <header>
+        <a href="index.html" class="logo">Apna Meme Store</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html" class="cart-icon">
+                Cart
+                <span id="cart-count" class="cart-count">0</span>
+            </a>
+            <a href="login.html">Admin</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Checkout</h1>
+        <div id="feedback-message" class="message hidden"></div>
+        <div class="checkout-container" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+            <div class="checkout-form" style="flex: 2 1 500px;">
+                <h2>Shipping Details</h2>
+                <form id="checkout-form">
+                    <input type="text" id="name" placeholder="Full Name" required>
+                    <input type="text" id="phone" placeholder="Phone Number" required>
+                    <textarea id="address" placeholder="Full Address" rows="4" required></textarea>
+                    <input type="text" id="pincode" placeholder="Pincode" required>
+                    <button type="submit" class="btn">Place Order</button>
+                </form>
+            </div>
+            <div class="order-summary" style="flex: 1 1 300px;">
+                <h2>Order Summary</h2>
+                <div id="summary-items-container"></div>
+                <div class="total-price">
+                    <span>Total</span>
+                    <span id="total-price">₹0.00</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

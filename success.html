@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Successful - Apna Meme Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="success-page">
+    <header>
+        <a href="index.html" class="logo">Apna Meme Store</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html" class="cart-icon">
+                Cart
+                <span id="cart-count" class="cart-count">0</span>
+            </a>
+            <a href="login.html">Admin</a>
+        </nav>
+    </header>
+
+    <main class="container" style="text-align: center;">
+        <h1 style="color: var(--success-color);">Order Placed Successfully!</h1>
+        <p>Your memes are on the way. You will receive a confirmation shortly.</p>
+        <p>Your Order ID is: <strong id="order-id"></strong></p>
+        <a href="index.html" class="btn">Continue Shopping</a>
+    </main>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

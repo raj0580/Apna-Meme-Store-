@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Apna Meme Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="admin-page">
+    
+    <header>
+        <a href="index.html" class="logo">Admin Panel</a>
+        <nav>
+            <a href="index.html">View Store</a>
+            <button id="logout-btn" class="btn btn-danger">Logout</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Welcome, Admin</h1>
+        <div id="feedback-message" class="message hidden"></div>
+        
+        <div class="admin-container">
+
+            <!-- Product Manager Section -->
+            <section class="admin-section">
+                <h3>Product Manager</h3>
+                <form id="add-product-form">
+                    <input type="text" id="product-name" placeholder="Product Name" required>
+                    <input type="number" id="product-price" placeholder="Price (₹)" required>
+                    <input type="number" id="product-discount" placeholder="Discount (%)" value="0" required>
+                    <input type="text" id="product-category" placeholder="Category (e.g., 'Trending')" required>
+                    <input type="text" id="product-image" placeholder="Image URL" required>
+                    <textarea id="product-description" placeholder="Product Description" rows="4" required></textarea>
+                    <button type="submit" class="btn">Add Product</button>
+                </form>
+                <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Existing Products</h4>
+                <table id="products-table">
+                    <thead>
+                        <tr><th>Image</th><th>Name</th><th>Price</th><th>Action</th></tr>
+                    </thead>
+                    <tbody><!-- Products loaded here by JS --></tbody>
+                </table>
+            </section>
+            
+            <!-- Coupon Manager Section -->
+            <section class="admin-section">
+                <h3>Coupon Manager</h3>
+                <form id="add-coupon-form" style="flex-direction: row; display: flex; gap: 10px; align-items: center; margin-bottom: 1rem;">
+                    <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g., MEME10)" required style="flex-grow: 2;">
+                    <input type="number" id="coupon-discount-input" placeholder="Discount (%)" required style="flex-grow: 1;">
+                    <button type="submit" class="btn btn-secondary">Add Coupon</button>
+                </form>
+                <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Active Coupons</h4>
+                <table id="coupons-table">
+                    <thead><tr><th>Code</th><th>Discount (%)</th><th>Action</th></tr></thead>
+                    <tbody><!-- Coupons loaded here by JS --></tbody>
+                </table>
+            </section>
+
+            <!-- Customer Orders Section -->
+            <section class="admin-section">
+                <h3>Customer Orders</h3>
+                <div id="orders-list"><!-- Orders loaded here by JS --></div>
+            </section>
+
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
