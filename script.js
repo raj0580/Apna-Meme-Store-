@@ -1,4 +1,4 @@
-// script.js
+// script.js (Complete & Fixed)
 import { db, auth } from './firebase-config.js';
 import { 
     collection, getDocs, doc, getDoc, addDoc, deleteDoc, setDoc, serverTimestamp, query, orderBy 
@@ -217,7 +217,6 @@ function renderCartPage() {
         cartContainer.appendChild(itemElement);
     });
 
-    // Update prices
     const discountAmount = state.coupon ? subtotal * (state.coupon.discount / 100) : 0;
     const total = subtotal - discountAmount;
 
@@ -270,21 +269,7 @@ function renderSuccessPage() {
     }
 }
 
-
 // --- ADMIN PANEL LOGIC ---
-async function renderAdminPage() {
-    if (!document.getElementById('admin-page')) return;
-    
-    onAuthStateChanged(auth, user => {
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            loadAdminProducts();
-            loadAdminCoupons();
-            loadAdminOrders();
-        }
-    });
-}
 
 async function loadAdminProducts() {
     const tbody = document.querySelector('#products-table tbody');
@@ -409,21 +394,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     switch (pageId) {
         case 'home-page':
-            renderHomePage();
-            break;
         case 'product-page':
-            renderProductPage();
-            break;
         case 'cart-page':
-            renderCartPage();
+        case 'checkout-page':
+        case 'success-page':
+            // Logic for public-facing pages
+            if (pageId === 'home-page') renderHomePage();
+            if (pageId === 'product-page') renderProductPage();
+            if (pageId === 'cart-page') renderCartPage();
+            if (pageId === 'checkout-page') renderCheckoutPage();
+            if (pageId === 'success-page') renderSuccessPage();
+
+            // Event listeners for these pages
             document.getElementById('apply-coupon-btn')?.addEventListener('click', async () => {
                 const codeInput = document.getElementById('coupon-code');
                 const code = codeInput.value.trim().toUpperCase();
                 if (!code) return;
-
                 const couponRef = doc(db, 'coupons', code);
                 const couponSnap = await getDoc(couponRef);
-
                 if(couponSnap.exists()) {
                     state.coupon = { code, ...couponSnap.data() };
                     saveCoupon();
@@ -436,32 +424,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     showMessage('feedback-message', 'Invalid coupon code.', 'error');
                 }
             });
-            break;
-        case 'checkout-page':
-            renderCheckoutPage();
+
             document.getElementById('checkout-form')?.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const form = e.target;
                 const orderData = {
-                    name: form.name.value,
-                    phone: form.phone.value,
-                    address: form.address.value,
-                    pincode: form.pincode.value,
-                    cart: state.cart,
-                    couponApplied: state.coupon ? state.coupon.code : null,
-                    createdAt: serverTimestamp()
+                    name: form.name.value, phone: form.phone.value, address: form.address.value, pincode: form.pincode.value,
+                    cart: state.cart, couponApplied: state.coupon ? state.coupon.code : null, createdAt: serverTimestamp()
                 };
-
                 let subtotal = state.cart.reduce((sum, item) => sum + (item.price * (1 - item.discount / 100)) * item.quantity, 0);
                 const discountAmount = state.coupon ? subtotal * (state.coupon.discount / 100) : 0;
                 orderData.totalPrice = subtotal - discountAmount;
-
                 try {
                     const orderRef = await addDoc(collection(db, 'orders'), orderData);
-                    state.cart = [];
-                    state.coupon = null;
-                    saveCart();
-                    saveCoupon();
+                    state.cart = []; state.coupon = null; saveCart(); saveCoupon();
                     window.location.href = `success.html?orderId=${orderRef.id}`;
                 } catch(error) {
                     console.error("Error placing order:", error);
@@ -469,9 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             break;
-        case 'success-page':
-            renderSuccessPage();
-            break;
+
         case 'login-page':
             onAuthStateChanged(auth, user => {
                 if (user) window.location.href = 'admin.html';
@@ -488,32 +462,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             break;
+
         case 'admin-page':
-            renderAdminPage();
-            document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
-            
-            document.getElementById('add-product-form')?.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                const newProduct = {
-                    name: form['product-name'].value,
-                    price: parseFloat(form['product-price'].value),
-                    discount: parseFloat(form['product-discount'].value),
-                    category: form['product-category'].value,
-                    image: form['product-image'].value,
-                    description: form['product-description'].value,
-                    createdAt: serverTimestamp()
-                };
-                await addDoc(collection(db, 'products'), newProduct);
-                showMessage('feedback-message', 'Product added successfully.');
-                form.reset();
-                loadAdminProducts();
+            const adminContent = document.getElementById('admin-main-content');
+            const loadingMessage = document.getElementById('admin-loading-message');
+
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    if(loadingMessage) loadingMessage.style.display = 'none';
+                    if(adminContent) adminContent.style.display = 'block';
+                    loadAdminProducts();
+                    loadAdminCoupons();
+                    loadAdminOrders();
+                } else {
+                    window.location.href = 'login.html';
+                }
             });
 
-            document.getElementById('add-coupon-form')?.addEventListener('submit', async (e) => {
+            document.getElementById('logout-btn')?.addEventListener('click', () => {
+                signOut(auth).catch(error => console.error("Logout Error:", error));
+            });
+
+            document.getElementById('add-product-form')?.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                if (!auth.currentUser) {
+                    showMessage('feedback-message', 'Authentication error. Please re-login.', 'error'); return;
+                }
                 const form = e.target;
-                const code = form['coupon-code-input'].value.trim().toUpperCase();
-                const discount = parseFloat(form['coupon-discount-input'].value);
-                if (!code || isNaN(discount)) {
-                    showMessage('feedback-message', 'Please fill both coupon fields correctly.', 'err
+                const newProduct = {
+                    name: form['product-name'].value, price: parseFloat(form['product-price'].value),
+                    discount: parseFloat(form['product-discount'].value), category: form['product-category'].value,
+                    image: form['product-image'].value, description: form['product-description'].value,
+                    createdAt: serverTimestamp()
+                };
+                try {
+                    await addDoc(collection(db, 'products'), newProduct);
+                    showMessage('feedback-message', 'Product added successfully.');
+                    form.reset();
+                    loadAdminProducts();
+               
